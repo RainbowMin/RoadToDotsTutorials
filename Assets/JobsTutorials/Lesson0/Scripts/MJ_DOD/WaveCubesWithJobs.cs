@@ -20,7 +20,6 @@ namespace MJ.Jobs.OOD
         static readonly ProfilerMarker<int> profilerMarker = new ProfilerMarker<int>("WaveCubes UpdateTransform", "Objects Count");
         void Start()
         {           
-
             for (var z = -zHalfCount; z <= zHalfCount; z++)
             {
                 for (var x = -xHalfCount; x <= xHalfCount; x++)
@@ -32,6 +31,11 @@ namespace MJ.Jobs.OOD
             }          
             m_WorldPositions = new NativeArray<Vector3>(cubesList.Count, Allocator.Persistent);
             m_LocalPositions = new NativeArray<Vector3>(cubesList.Count, Allocator.Persistent);
+            for(int i = 0; i < cubesList.Count; i++)
+            {
+                m_WorldPositions[i] = cubesList[i].position;
+                m_LocalPositions[i] = cubesList[i].localPosition;                
+            }
         }
 
         void OnDestroy()
@@ -44,11 +48,7 @@ namespace MJ.Jobs.OOD
         {
             using (profilerMarker.Auto(cubesList.Count))
             {
-                for(int i = 0; i < cubesList.Count; i++)
-                {
-                    m_WorldPositions[i] = cubesList[i].position;
-                    m_LocalPositions[i] = cubesList[i].localPosition;                
-                }
+  
 
                 WaveCubesJob waveCubesJob = new WaveCubesJob();
                 waveCubesJob.TimeValue = Time.time;
